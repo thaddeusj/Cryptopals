@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections;
 
 namespace cryptopals
 {
-    public class CaesarTools
+    public class IntSingleVigenere
     {
-        //Tools for recongnizing Caesar ciphers
-
         static double[] lFreqs = {
              0.08167,
              0.01492,
@@ -46,6 +43,22 @@ namespace cryptopals
         const int puncFactor = 500;
         const int numFactor = 1000;
         const int weirdFactor = 20000;
+        const int whitespFactor = 200;
+
+
+        public static string decipherCText(string hexText, char key)
+        {
+            int[] cText = IntConversion.hexToInts(hexText);
+
+            int[] plainText = new int[cText.Length];
+
+            for(int i = 0; i < plainText.Length; i++)
+            {
+                plainText[i] = cText[i] ^ key;
+            }
+
+            return IntConversion.intsToString(plainText);
+        }
 
         public static double CaesarL2NormSquared(string s)
         {
@@ -56,31 +69,26 @@ namespace cryptopals
             int punc = 0;
             int num = 0;
             int weird = 0;
+            int whitespace = 0;
 
-            string ignore = " .,@'";
+            string ignore = " .,'";
 
-            for(int i = 0; i < 26; i++){ actualFreqs[i] = 0; }
+            for (int i = 0; i < 26; i++) { actualFreqs[i] = 0; }
 
-            for(int i = 0; i < s.Length; i++)
+            for (int i = 0; i < s.Length; i++)
             {
                 int index = 27;
                 int c = s[i];
                 if (!(ignore.Contains((char)c)))
                 {
-                    if ((c >= 97) && (c <= 122)) index = c - 97;
-                    if ((c >= 65) && (c <= 90)) index = c - 65;
-
+                    if (char.IsLower((char)c)) index = c - 97;
+                    else if (char.IsUpper((char)c)) index = c - 65;
+                    else if (char.IsNumber((char)c)) num++;
+                    else if (char.IsPunctuation((char)c)) punc++;
+                    else if (char.IsWhiteSpace((char)c)) whitespace++;
+                    else superPunish++;
+                    
                     if (index < 26) actualFreqs[index] += 1;
-
-                    if (c < 32) superPunish += 1;
-                    if (c > 126)
-                    {
-                        if (c == 127) superPunish++;
-                        if (c > 165) superPunish++;
-                        else weird++;
-                    }
-                    if (((c > 32) && (c < 65) && ((c < 48) || (c > 57))) || ((c <= 126) && (c >= 123)) || ((c >= 90) && (c <= 96))) punc += 1;
-                    if ((c >= 48) && (c <= 57)) num++;
                 }
             }
 
@@ -89,13 +97,14 @@ namespace cryptopals
                 for (int i = 0; i < 26; i++)
                 {
                     //actualFreqs[i] /= s.Length;
-                    norm += Math.Abs((actualFreqs[i] - lFreqs[i]*s.Length)* (actualFreqs[i] - lFreqs[i]*s.Length));
+                    norm += Math.Abs((actualFreqs[i] - (lFreqs[i] * s.Length)) * (actualFreqs[i] - (lFreqs[i] * s.Length)));
                 }
 
-                norm += punishFactor*superPunish; //punish weird characters
+                norm += punishFactor * superPunish; //punish weird characters
                 norm += puncFactor * punc;
                 norm += numFactor * num;
                 norm += punishFactor * weird;
+                norm += whitespFactor * whitespace;
             }
             catch { norm = -1.0; }
 
@@ -104,45 +113,32 @@ namespace cryptopals
             return norm;
         }
 
-        public static Tuple<double, char,string> decipherCaesar(string cText)
+        public static Tuple<double, char, string> decipherCaesar(string cText)
         {
 
             double minNorm = -1.0;
             char minChar = 'a';
             string minString = "";
-            
+
             for (int c = 0; c < 256; c++)
             {
-                
-                char d = (char)c;
 
-                string tempString = decipherCText(cText, d);
+
+                string tempString = decipherCText(cText, (char)c);
                 double tempNorm = CaesarL2NormSquared(tempString);
-                if (((minNorm < 0) && (tempNorm < punishFactor )) || ((minNorm >= 0) && (tempNorm < minNorm) && (tempNorm > 0)))
+
+                if (((minNorm < 0) && (tempNorm < punishFactor)) || ((minNorm >= 0) && (tempNorm < minNorm) && (tempNorm > 0)))
                 {
                     minNorm = tempNorm;
                     minChar = (char)c;
                     minString = tempString;
                 }
 
-                if(tempNorm < punishFactor) Console.WriteLine((int)c +  ", " + tempNorm + " , " + tempString);
+                if (tempNorm < punishFactor) Console.WriteLine((int)c + ", " + tempNorm + " , " + tempString);
 
             }
 
-            return new Tuple<double, char, string>(minNorm, minChar,minString);
+            return new Tuple<double, char, string>(minNorm, minChar, minString);
         }
-
-        public static string decipherCText(string cText, char cipher)
-        {
-            BitArray cTextBits = StringConverters.HexToBits(cText);
-
-            BitArray cipherBits = StringConverters.CharToBits(cipher, cText.Length/2);
-
-            cTextBits.Xor(cipherBits);
-
-
-            return StringConverters.BitsToString(cTextBits);
-        }
-
     }
 }

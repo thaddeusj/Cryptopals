@@ -185,7 +185,7 @@ namespace cryptopals
             for (int j = 7; j >= 0; j--)
             {
                 cBits[j] = ((cInt % 2) == 1) ? true : false;
-                cInt = cInt >> 1;
+                cInt /= 2;
             }
 
             for (int i = 0; i < bytes; i++)
