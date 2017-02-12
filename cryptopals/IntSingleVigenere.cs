@@ -134,7 +134,7 @@ namespace cryptopals
                     minString = tempString;
                 }
 
-                if (tempNorm < punishFactor) Console.WriteLine((int)c + ", " + tempNorm + " , " + tempString);
+                //if (tempNorm < punishFactor) Console.WriteLine((int)c + ", " + tempNorm + " , " + tempString);
 
             }
 

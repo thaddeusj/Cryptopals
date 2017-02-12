@@ -199,6 +199,17 @@ namespace cryptopals
             return bits;
 
         }
+
+        public static int[] stringToInts(string s)
+        {
+            int[] ks = new int[s.Length];
+
+            for(int i = 0; i < s.Length; i++) { ks[i] = s[i]; }
+
+            return ks;
+
+
+        }
     }
 }
     

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections;
+using System.Security.Cryptography;
 
 namespace cryptopals
 {
@@ -420,6 +422,69 @@ namespace cryptopals
 
 
             Console.WriteLine(IntMultiVigenere.decipherCText(pText1, key));
+        }
+
+        public static void Challenge6()
+        {
+            StreamReader sr = new StreamReader(@"C:\Users\User\Documents\Visual Studio 2015\Projects\cryptopals\cryptopals\set 1 challenge 6.txt");
+
+            string base64 = "";
+            string temp = "";
+
+            while((temp = sr.ReadLine()) != null)
+            {
+                base64 = base64 + temp;
+            }
+            
+            BitArray bits = StringConverters.Base64ToBits(base64);
+            string hex = StringConverters.BitsToHex(bits);
+
+            
+
+            Console.WriteLine(IntMultiVigenere.crackMV(hex));
+
+        }
+
+        public static void Challenge7()
+        {
+            StreamReader sr = new StreamReader(@"C:\Users\User\Documents\Visual Studio 2015\Projects\cryptopals\cryptopals\set 1 challenge 7.txt");
+
+            string base64 = "";
+            string temp = "";
+
+            while ((temp = sr.ReadLine()) != null)
+            {
+                base64 = base64 + temp;
+            }
+            BitArray bits = StringConverters.Base64ToBits(base64);
+            string hex = StringConverters.BitsToHex(bits);
+
+
+            string keyS = "YELLOW SUBMARINE";
+            byte[] key = new byte[16];
+            byte[] iv = new byte[16];
+            for (int i = 0; i < 16; i++)
+            {
+                key[i] = Convert.ToByte(keyS[i]);
+                iv[i] = Convert.ToByte(0);
+            }
+
+            int[] cText = IntConversion.hexToInts(hex);
+            byte[] cTextB = new byte[cText.Length];
+            for(int i = 0; i < cText.Length; i++) { cTextB[i] = (byte)cText[i]; }
+            byte[] pTextB = new byte[cText.Length];
+            int[] pText = new int[cText.Length];
+
+            AesManaged alg = new AesManaged { KeySize = 128, Key = key, BlockSize = 128, Mode = CipherMode.ECB, Padding = PaddingMode.Zeros, IV = iv };
+
+            ICryptoTransform dec = alg.CreateDecryptor(alg.Key, alg.IV);
+
+            dec.TransformBlock(cTextB, 0, cText.Length, pTextB, 0);
+
+            for (int i = 0; i < cText.Length; i++) { pText[i] = pTextB[i]; }
+
+            Console.WriteLine(IntConversion.intsToString(pText));
+            
         }
     }
 }

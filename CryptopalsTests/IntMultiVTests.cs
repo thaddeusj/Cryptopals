@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using cryptopals;
 
 namespace CryptopalsTests
 {
@@ -61,7 +62,16 @@ namespace CryptopalsTests
         [TestMethod]
         public void hammingdistTest()
         {
-            //Assert.IsTrue(cryptopals.IntMultiVigenere.hammingDist(cryptopals.StringConverters.)
+            Assert.IsTrue(cryptopals.IntMultiVigenere.hammingDist("this is a test", "wokka wokka!!!") == 37);
+        }
+
+        [TestMethod]
+        public void ihammingTest()
+        {
+            string hex1 = "7468697320697320612074657374";
+            string hex2 = "776f6b6b6120776f6b6b61212121";
+
+            Assert.IsTrue(IntMultiVigenere.ihammingDist(IntConversion.hexToInts(hex1), IntConversion.hexToInts(hex2)) == 37);
         }
     }
 }
