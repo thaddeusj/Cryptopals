@@ -31,6 +31,7 @@ namespace cryptopals
                 if (chal == 5) Set1.Challenge5();
                 if (chal == 6) Set1.Challenge6();
                 if (chal == 7) Set1.Challenge7();
+                if (chal == 8) Set1.Challenge8();
             }
 
 
