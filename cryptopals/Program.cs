@@ -35,7 +35,21 @@ namespace cryptopals
             }
 
 
+            if (args[0] == "2")
+            {
+                int chal = 0;
 
+                string comm = Console.ReadLine();
+                try
+                {
+                    chal = int.Parse(comm);
+                }
+                catch { }
+
+                if (chal == 2) Set2.Challenge2();
+
+
+            }
 
             Console.ReadLine();
 

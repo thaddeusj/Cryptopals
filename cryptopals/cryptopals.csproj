@@ -47,12 +47,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CaesarTools.cs" />
+    <Compile Include="CBC.cs" />
     <Compile Include="IntConversion.cs" />
     <Compile Include="IntMultiVigenere.cs" />
     <Compile Include="IntSingleVigenere.cs" />
+    <Compile Include="Padding.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Set1.cs" />
+    <Compile Include="Set2.cs" />
     <Compile Include="StringConverters.cs" />
   </ItemGroup>
   <ItemGroup>
