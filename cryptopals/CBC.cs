@@ -104,7 +104,9 @@ namespace cryptopals
             byte[] padPText = Padding.PKCS7PadToBlockLength(pText, enc.InputBlockSize);
             byte[] cText = new byte[padPText.Length];
 
-            byte[] curNonce = IV;
+            byte[] curNonce = new byte[IV.Length]; // Be careful! We change curNonce, so we have to initializa the hard way.
+            for(int i = 0;i < IV.Length; i++) { curNonce[i] = IV[i]; }
+
 
             int blockLength = enc.InputBlockSize;
             
@@ -123,7 +125,7 @@ namespace cryptopals
                 
                 enc.TransformBlock(pBlock, 0, blockLength, cBlock, 0);
 
-                for (int j = 0; i < blockLength; i++)
+                for (int j = 0; j < blockLength; j++)
                 {
                     curNonce[j] = cBlock[j];
                     cText[blockLength * i + j] = cBlock[j];

@@ -46,6 +46,7 @@ namespace cryptopals
                 }
                 catch { }
 
+                if (chal == 1) Set2.Challenge2Enc();
                 if (chal == 2) Set2.Challenge2();
 
 
